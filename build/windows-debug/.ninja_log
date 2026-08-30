@@ -1,0 +1,16 @@
+# ninja log v7
+37	1217	8097296962893128	CMakeFiles/ExpressUSB.dir/src/crc8.cpp.obj	8a9df0e260642811
+44	1850	8097296962948242	CMakeFiles/ExpressUSB.dir/src/frame_builder.cpp.obj	fa7a785924da1f1b
+49	2015	8097296963008481	CMakeFiles/ExpressUSB.dir/src/frame_reader.cpp.obj	e3dd2247fe7f95f0
+22	1802	8097410562438025	CMakeFiles/ExpressUSB.dir/src/frame_parser.cpp.obj	56f9e4278502d3db
+42	1866	8097410562628922	CMakeFiles/expressusb_example.dir/examples/basic_connection.cpp.obj	99e76ea319fddae1
+60	2699	8097296963118728	CMakeFiles/ExpressUSB.dir/src/parameters.cpp.obj	5b78f75bc2eef276
+83	2036	8097419547193802	CMakeFiles/ExpressUSB.dir/src/crsf_controller.cpp.obj	43f199a679613100
+71	2125	8097419547073689	CMakeFiles/ExpressUSB.dir/src/serial_port.cpp.obj	98a472e54c79a8b7
+2125	2228	8097419567613167	libExpressUSB.a	3d392a2696ba6c98
+2228	2403	8097419568642806	expressusb_example.exe	2a8303c3999d3690
+7	1635	8097430059257454	build.ninja	3004423bae3ebf4f
+7	1635	8097430058907262	C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/cmake_install.cmake	3004423bae3ebf4f
+65	2532	8097429124085190	CMakeFiles/rc_control_example.dir/examples/rc_control_example.cpp.obj	bc9ba18c954992fc
+1912	2157	8097421522995105	rc_control_example.exe	57d985483b4d5d8a
+27	272	8097430066098096	rc_control_example.exe	732a99466b2ed180

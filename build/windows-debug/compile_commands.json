@@ -1,0 +1,62 @@
+[
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\crc8.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\crc8.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/crc8.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/crc8.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\frame_builder.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\frame_builder.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/frame_builder.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/frame_builder.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\frame_reader.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\frame_reader.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/frame_reader.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/frame_reader.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\frame_parser.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\frame_parser.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/frame_parser.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/frame_parser.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\parameters.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\parameters.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/parameters.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/parameters.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\serial_port.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\serial_port.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/serial_port.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/serial_port.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\ExpressUSB.dir\\src\\crsf_controller.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\src\\crsf_controller.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/src/crsf_controller.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir/src/crsf_controller.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\expressusb_example.dir\\examples\\basic_connection.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\examples\\basic_connection.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/examples/basic_connection.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/expressusb_example.dir/examples/basic_connection.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\rc_control_example.dir\\examples\\rc_control_example.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\examples\\rc_control_example.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/examples/rc_control_example.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/rc_control_example.dir/examples/rc_control_example.cpp.obj"
+},
+{
+  "directory": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+  "command": "C:\\Users\\hanjo\\AppData\\Local\\Microsoft\\WinGet\\Packages\\MartinStorsjo.LLVM-MinGW.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\llvm-mingw-20260616-ucrt-x86_64\\bin\\c++.exe -DASIO_STANDALONE -D_WIN32_WINNT=0x0601 -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/include\" -I\"C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/_deps/asio-src/asio/include\" -g -std=gnu++20 -o CMakeFiles\\special_commands_example.dir\\examples\\special_commands_example.cpp.obj -c \"C:\\Users\\hanjo\\Untested Prototypes\\Projects\\20260812_PentaPod\\03 Code\\ExpressUSB-Controller\\examples\\special_commands_example.cpp\"",
+  "file": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/examples/special_commands_example.cpp",
+  "output": "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/special_commands_example.dir/examples/special_commands_example.cpp.obj"
+}
+]

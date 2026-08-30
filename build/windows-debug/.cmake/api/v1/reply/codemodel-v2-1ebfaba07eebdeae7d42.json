@@ -1,0 +1,114 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Git::Git::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Git__Git-Debug-1cc386481971bd02c96c.json",
+					"name" : "Git::Git",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "asio::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-asio-Debug-4c307d2a0c57670684eb.json",
+					"name" : "asio",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1
+					],
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-b5805d5c08fd3d92def4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ExpressUSB_Controller",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ExpressUSB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ExpressUSB-Debug-7b00c8186aa9bdb90be3.json",
+					"name" : "ExpressUSB",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "expressusb_example::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-expressusb_example-Debug-6937d07c84b2785c1f81.json",
+					"name" : "expressusb_example",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rc_control_example::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rc_control_example-Debug-e7bf6f35173b7ab2eb88.json",
+					"name" : "rc_control_example",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "special_commands_example::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-special_commands_example-Debug-41b3c4c1e8d796d4e385.json",
+					"name" : "special_commands_example",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug",
+		"source" : "C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 11
+	}
+}

@@ -1,0 +1,6 @@
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/ExpressUSB.dir
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/expressusb_example.dir
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/rc_control_example.dir
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/special_commands_example.dir
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/edit_cache.dir
+C:/Users/hanjo/Untested Prototypes/Projects/20260812_PentaPod/03 Code/ExpressUSB-Controller/build/windows-debug/CMakeFiles/rebuild_cache.dir
