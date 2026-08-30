@@ -1,164 +1,128 @@
 #include <iostream>
-#include <string>
-#include <thread>
 #include <chrono>
+#include <thread>
 #include <csignal>
 #include <atomic>
 #include <iomanip>
 
-#include "crsf/crsf_controller.h"
-#include "crsf/crsf_protocol.h"
+#include "mavlink_controller/mavlink_controller.h"
 
-static std::atomic<bool> g_running{true};
+std::atomic<bool> g_running{true};
 
-void signalHandler(int) {
+void signalHandler(int signum) {
     g_running = false;
 }
 
-int main(int argc, char* argv[]) {
-    signal(SIGINT, signalHandler);
-    
-    // Parse args
-    std::string port;
-    unsigned int baud = 921600;
-    
+int main(int argc, char** argv) {
     if (argc < 2) {
-        // List available ports
-        std::cout << "Usage: " << argv[0] << " <port> [baud_rate]" << std::endl;
-        std::cout << "\nAvailable serial ports:" << std::endl;
-        auto ports = crsf::CrsfController::listSerialPorts();
-        if (ports.empty()) {
-            std::cout << "  (none found)" << std::endl;
-        } else {
-            for (const auto& p : ports) {
-                std::cout << "  " << p << std::endl;
-            }
+        std::cerr << "Usage: expressusb_example <COM_PORT> [BAUD]" << std::endl;
+        std::cerr << "Example: expressusb_example COM10 460800" << std::endl;
+        std::cerr << std::endl;
+        std::cerr << "Available serial ports:" << std::endl;
+        for (const auto& port : mavlink_ctrl::MavlinkController::listSerialPorts()) {
+            std::cerr << "  " << port << std::endl;
         }
         return 1;
     }
-    
-    port = argv[1];
-    if (argc >= 3) baud = std::stoul(argv[2]);
-    
-    crsf::CrsfController controller;
-    
-    // Set up callbacks
-    controller.onStateChange([](crsf::ConnectionState state) {
+
+    std::string port = argv[1];
+    uint32_t baud = (argc >= 3) ? std::stoul(argv[2]) : 460800;
+
+    std::signal(SIGINT, signalHandler);
+
+    mavlink_ctrl::MavlinkController controller;
+
+    // State change callback
+    controller.onStateChange([](mavlink_ctrl::ConnectionState state) {
         switch (state) {
-            case crsf::ConnectionState::Disconnected:
+            case mavlink_ctrl::ConnectionState::Disconnected:
                 std::cout << "[STATE] Disconnected" << std::endl;
                 break;
-            case crsf::ConnectionState::TxConnected:
-                std::cout << "[STATE] TX Module Connected (no receiver)" << std::endl;
+            case mavlink_ctrl::ConnectionState::Connected:
+                std::cout << "[STATE] Connected (waiting for remote heartbeat...)" << std::endl;
                 break;
-            case crsf::ConnectionState::LinkUp:
-                std::cout << "[STATE] Link Up! Receiver connected." << std::endl;
+            case mavlink_ctrl::ConnectionState::LinkUp:
+                std::cout << "[STATE] Link Up! Remote system detected." << std::endl;
                 break;
         }
     });
-    
-    controller.onParametersLoaded([]() {
-        std::cout << "[INFO] All parameters loaded!" << std::endl;
-    });
-    
-    // Configure before connecting
-    controller.setAutoReconnect(true, 3000);
-    
-    // Connect
+
+    controller.setAutoReconnect(true, 2000);
+
     std::cout << "Connecting to " << port << " @ " << baud << " baud..." << std::endl;
     if (!controller.connect(port, baud)) {
         std::cerr << "Failed to open port " << port << std::endl;
         return 1;
     }
-    
-    // Set all channels to center
-    controller.setAllChannelsMid();
-    
-    std::cout << "Connected. Press Ctrl+C to exit." << std::endl;
-    std::cout << "Telemetry will print every 2 seconds." << std::endl;
-    
-    // Main loop - print telemetry periodically
+
+    std::cout << "Connected! Sending GCS heartbeats at 1Hz." << std::endl;
+    std::cout << "Press Ctrl+C to exit.\n" << std::endl;
+
     while (g_running) {
+        auto t = controller.getTelemetry();
+
+        std::cout << "--- Telemetry Snapshot ---" << std::endl;
+
+        // Remote system info
+        if (t.last_heartbeat_ms > 0) {
+            std::cout << "  Remote: SysID=" << (int)t.remote_system_id
+                      << " CompID=" << (int)t.remote_component_id
+                      << " Type=" << (int)t.remote_type
+                      << " Status=" << (int)t.remote_system_status << std::endl;
+        } else {
+            std::cout << "  Remote: No heartbeat received yet" << std::endl;
+        }
+
+        // Battery
+        if (t.battery_voltage_mv > 0) {
+            std::cout << "  Battery: " << std::fixed << std::setprecision(1) 
+                      << (t.battery_voltage_mv / 1000.0f) << "V"
+                      << " | " << (t.battery_current_ca / 100.0f) << "A"
+                      << " | " << (int)t.battery_remaining << "%" << std::endl;
+        }
+
+        // Attitude
+        if (t.attitude_roll != 0 || t.attitude_pitch != 0 || t.attitude_yaw != 0) {
+            std::cout << "  Attitude: R=" << std::fixed << std::setprecision(1) 
+                      << (t.attitude_roll * 57.2958f) << "°"
+                      << " P=" << (t.attitude_pitch * 57.2958f) << "°"
+                      << " Y=" << (t.attitude_yaw * 57.2958f) << "°" << std::endl;
+        }
+
+        // Radio link
+        if (t.radio_rssi > 0) {
+            std::cout << "  Radio: RSSI=" << (int)t.radio_rssi
+                      << " RemRSSI=" << (int)t.radio_remrssi
+                      << " TxBuf=" << (int)t.radio_txbuf << "%"
+                      << " RxErr=" << t.radio_rxerrors << std::endl;
+        }
+
+        // GPS
+        if (t.gps_fix_type > 0) {
+            std::cout << "  GPS: Fix=" << (int)t.gps_fix_type
+                      << " Sats=" << (int)t.gps_satellites
+                      << " Lat=" << (t.gps_lat / 1e7) 
+                      << " Lon=" << (t.gps_lon / 1e7) << std::endl;
+        }
+
+        // Named values (servo encoder angles from Raspberry Pi)
+        if (!t.named_values.empty()) {
+            std::cout << "  Named Values:" << std::endl;
+            for (const auto& [name, value] : t.named_values) {
+                std::cout << "    " << name << " = " << std::fixed << std::setprecision(2) << value << std::endl;
+            }
+        }
+
+        // Status text
+        if (!t.last_statustext.empty()) {
+            std::cout << "  StatusText: [" << (int)t.last_statustext_severity << "] " << t.last_statustext << std::endl;
+        }
+
+        std::cout << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        
-        auto state = controller.getConnectionState();
-        auto telem = controller.getTelemetry();
-        
-        auto now = std::chrono::system_clock::now();
-        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-        
-        std::cout << "\n=== Telemetry [" << std::put_time(std::localtime(&now_c), "%H:%M:%S") << "] ==="  << std::endl;
-        std::cout << "Connection: " 
-                  << (state == crsf::ConnectionState::LinkUp ? "LINK UP" :
-                      state == crsf::ConnectionState::TxConnected ? "TX ONLY" : "DISCONNECTED")
-                  << std::endl;
-        
-        if (!telem.device_name.empty()) {
-            std::cout << "Device: " << telem.device_name << std::endl;
-        }
-        
-        std::cout << "Link Quality: " << (int)telem.uplink_lq << "%" << std::endl;
-        std::cout << "RSSI: " << -(int)telem.uplink_rssi_1 << " dBm" << std::endl;
-        std::cout << "RF Mode: " << (int)telem.rf_mode << std::endl;
-        std::cout << "TX Power: " << (int)telem.uplink_tx_power << std::endl;
-        
-        if (telem.battery_voltage > 0) {
-            std::cout << "Battery: " << (telem.battery_voltage / 10.0) << "V  "
-                      << (telem.battery_current / 10.0) << "A  "
-                      << (int)telem.battery_remaining << "%" << std::endl;
-        }
-        
-        if (!telem.cells_values.empty()) {
-            std::cout << "Cell Voltages: ";
-            for (size_t i = 0; i < telem.cells_values.size(); ++i) {
-                std::cout << telem.cells_values[i] << "mV ";
-            }
-            std::cout << std::endl;
-        }
-        
-        if (telem.channels_status_present) {
-            std::cout << "Arm State: " << (telem.is_armed ? "ARMED" : "DISARMED") 
-                      << " (Status byte: 0x" << std::hex << (int)telem.channels_status << std::dec << ")" << std::endl;
-        }
-        
-        if (telem.elrs_pkts_good > 0 || telem.elrs_pkts_bad > 0) {
-            std::cout << "ELRS Status: " << telem.elrs_pkts_good << " Good / " 
-                      << (int)telem.elrs_pkts_bad << " Bad (Flags: 0x" 
-                      << std::hex << (int)telem.elrs_flags << std::dec << ")" << std::endl;
-            if (!telem.elrs_status_msg.empty()) {
-                std::cout << "ELRS Msg: " << telem.elrs_status_msg << std::endl;
-            }
-        }
-        
-        // Print parameters if loaded
-        if (controller.areParametersLoaded()) {
-            auto params = controller.getParameters();
-            std::cout << "\nParameters (" << params.size() << " total):" << std::endl;
-            for (const auto& p : params) {
-                std::cout << "  [" << (int)p.index << "] " << p.label;
-                if (p.hidden) std::cout << " (hidden)";
-                if (p.select) {
-                    std::cout << " = ";
-                    if (p.select->current_index < p.select->options.size()) {
-                        std::cout << p.select->options[p.select->current_index];
-                    } else {
-                        std::cout << "<invalid_index>";
-                    }
-                    std::cout << " (" << (int)p.select->current_index << ")";
-                } else if (p.numeric) {
-                    std::cout << " = " << p.numeric->value;
-                    if (!p.numeric->units.empty()) std::cout << " " << p.numeric->units;
-                } else if (p.string_val) {
-                    std::cout << " = \"" << p.string_val->value << "\"";
-                }
-                std::cout << std::endl;
-            }
-        }
     }
-    
-    std::cout << "\nDisconnecting..." << std::endl;
+
+    std::cout << "Shutting down..." << std::endl;
     controller.disconnect();
-    std::cout << "Done." << std::endl;
-    
     return 0;
 }

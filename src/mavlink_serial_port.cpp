@@ -1,7 +1,7 @@
-#include "crsf/serial_port.h"
+#include "mavlink_controller/serial_port.h"
 #include <iostream>
 
-namespace crsf {
+namespace mavlink_ctrl {
 
 SerialPort::SerialPort() {}
 
@@ -45,7 +45,7 @@ bool SerialPort::open(const std::string& port_name, unsigned int baud_rate) {
 
 void SerialPort::close() {
     if (!is_open_) return;
-    is_open_ = false;  // Prevent new reads/writes from being queued
+    is_open_ = false;
 
     // Wake up the write thread so it can exit
     {
@@ -54,7 +54,6 @@ void SerialPort::close() {
     }
 
     if (io_context_) {
-        // Close the serial port to unblock any pending reads
         if (serial_ && serial_->is_open()) {
             std::error_code ec;
             serial_->cancel(ec);
@@ -75,7 +74,6 @@ void SerialPort::close() {
     
     std::lock_guard<std::mutex> lock(write_mutex_);
     rc_pending_ = false;
-    write_in_progress_ = false;
     command_queue_.clear();
 }
 
@@ -97,7 +95,6 @@ void SerialPort::readThreadLoop() {
         size_t bytes_transferred = serial_->read_some(asio::buffer(read_buffer_), ec);
         
         if (ec) {
-            // If the port was closed intentionally or operation aborted, exit cleanly
             if (ec == asio::error::operation_aborted || ec == asio::error::bad_descriptor || !is_open_) {
                 break;
             }
@@ -165,8 +162,4 @@ void SerialPort::writeThreadLoop() {
     }
 }
 
-void SerialPort::doNextWrite() {
-    // This function is no longer used but kept empty for safety
-}
-
-} // namespace crsf
+} // namespace mavlink_ctrl

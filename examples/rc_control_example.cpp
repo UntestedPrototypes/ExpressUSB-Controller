@@ -42,9 +42,8 @@ bool getGamepad(int& roll, int& pitch, int& throttle, int& yaw, bool& armed) {
     XINPUT_STATE state;
     ZeroMemory(&state, sizeof(XINPUT_STATE));
     if (XInputGetState(0, &state) == ERROR_SUCCESS) {
-        // Map 16-bit signed thumbsticks to 1000-2000 range
         auto mapAxis = [](SHORT val) {
-            if (std::abs(val) < 8000) return 1500; // Deadzone
+            if (std::abs(val) < 8000) return 1500;
             return 1500 + (val * 500 / 32767);
         };
         yaw = mapAxis(state.Gamepad.sThumbLX);
@@ -65,9 +64,9 @@ bool getGamepad(int& roll, int& pitch, int& throttle, int& yaw, bool& armed) {
             if (jse.type & JS_EVENT_AXIS) {
                 int mapped = 1500 + (jse.value * 500 / 32767);
                 if (jse.number == 0) yaw = mapped;
-                if (jse.number == 1) throttle = 3000 - mapped; // Inverted LY
+                if (jse.number == 1) throttle = 3000 - mapped;
                 if (jse.number == 3) roll = mapped;
-                if (jse.number == 4) pitch = 3000 - mapped; // Inverted RY
+                if (jse.number == 4) pitch = 3000 - mapped;
             } else if (jse.type & JS_EVENT_BUTTON) {
                 if (jse.number == 0 && jse.value == 1) armed = true;
                 if (jse.number == 1 && jse.value == 1) armed = false;
@@ -79,7 +78,7 @@ bool getGamepad(int& roll, int& pitch, int& throttle, int& yaw, bool& armed) {
     return false;
 }
 
-#include "crsf/crsf_controller.h"
+#include "mavlink_controller/mavlink_controller.h"
 
 std::atomic<bool> g_running{true};
 
@@ -90,17 +89,31 @@ void signalHandler(int signum) {
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "Usage: rc_control_example <COM_PORT> [BAUD]" << std::endl;
-        std::cerr << "Example: rc_control_example COM10 921600" << std::endl;
+        std::cerr << "Example: rc_control_example COM10 460800" << std::endl;
         return 1;
     }
 
     std::string port = argv[1];
-    uint32_t baud = (argc >= 3) ? std::stoul(argv[2]) : 921600;
+    uint32_t baud = (argc >= 3) ? std::stoul(argv[2]) : 460800;
 
     std::signal(SIGINT, signalHandler);
 
-    crsf::CrsfController controller;
+    mavlink_ctrl::MavlinkController controller;
     
+    controller.onStateChange([](mavlink_ctrl::ConnectionState state) {
+        switch (state) {
+            case mavlink_ctrl::ConnectionState::Disconnected:
+                std::cout << "\n[STATE] Disconnected" << std::endl;
+                break;
+            case mavlink_ctrl::ConnectionState::Connected:
+                std::cout << "\n[STATE] Connected (waiting for remote heartbeat...)" << std::endl;
+                break;
+            case mavlink_ctrl::ConnectionState::LinkUp:
+                std::cout << "\n[STATE] Link Up!" << std::endl;
+                break;
+        }
+    });
+
     std::cout << "Connecting to " << port << " @ " << baud << " baud..." << std::endl;
     if (!controller.connect(port, baud)) {
         std::cerr << "Failed to open port " << port << std::endl;
@@ -108,7 +121,7 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "Connected!\n\n";
-    std::cout << "=== RC Controller ===\n";
+    std::cout << "=== RC Controller (MAVLink) ===\n";
     std::cout << "Gamepad: Auto-detected (XInput / /dev/input/js0)\n";
     std::cout << "Keyboard (Fallback):\n";
     std::cout << "  W/S : Pitch\n";
@@ -118,7 +131,7 @@ int main(int argc, char** argv) {
     std::cout << "  SPACE : Toggle Arm\n";
     std::cout << "  Q : Quit\n\n";
 
-    int roll = 1500, pitch = 1500, throttle = 1000, yaw = 1500;
+    int roll = 1500, pitch = 1500, throttle = 1500, yaw = 1500;
     bool armed = false;
     bool using_gamepad = false;
 
@@ -134,7 +147,6 @@ int main(int argc, char** argv) {
                 if (key == 'q') g_running = false;
                 if (key == ' ') armed = !armed;
                 
-                // Instantly snap to max/min
                 if (key == 'w') pitch = 2000;
                 else if (key == 's') pitch = 1000;
                 else pitch = 1500;
@@ -151,17 +163,19 @@ int main(int argc, char** argv) {
                 else if (key == 'j') yaw = 1000;
                 else yaw = 1500;
             } else {
-                // Instantly snap all back to center if no key pressed
                 roll = 1500; pitch = 1500; throttle = 1500; yaw = 1500;
             }
         }
 
-        // Apply to CRSF protocol
+        // Apply to MAVLink RC override
         controller.setChannel(0, roll);
         controller.setChannel(1, pitch);
         controller.setChannel(2, throttle);
         controller.setChannel(3, yaw);
-        controller.setChannel(4, armed ? 2000 : 1000); // Channel 5 is Arm
+        controller.setChannel(4, armed ? 2000 : 1000);
+
+        // Get radio link status
+        auto t = controller.getTelemetry();
 
         // Print real-time values to the terminal
         std::cout << "\r[RC Out] [" << (using_gamepad ? "GAMEPAD" : "KEYBOARD") << "] "
@@ -169,8 +183,13 @@ int main(int argc, char** argv) {
                   << " P:" << pitch 
                   << " T:" << throttle 
                   << " Y:" << yaw 
-                  << " ARM:" << (armed ? "ARMED   " : "DISARMED") 
-                  << "    " << std::flush;
+                  << " ARM:" << (armed ? "ARMED   " : "DISARMED");
+        
+        if (t.radio_rssi > 0) {
+            std::cout << " | RSSI:" << (int)t.radio_rssi;
+        }
+        
+        std::cout << "    " << std::flush;
 
         // 50Hz update rate
         std::this_thread::sleep_for(std::chrono::milliseconds(20));

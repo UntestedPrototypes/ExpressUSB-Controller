@@ -8,7 +8,7 @@
 #include <mutex>
 #include <deque>
 
-namespace crsf {
+namespace mavlink_ctrl {
 
 class SerialPort {
 public:
@@ -52,11 +52,8 @@ private:
     std::vector<uint8_t> pending_rc_frame_;
     bool rc_pending_ = false;
     std::deque<std::vector<uint8_t>> command_queue_;
-    bool write_in_progress_ = false;
-    std::vector<uint8_t> active_write_buffer_; // keeps data alive during async_write
     
     void writeThreadLoop();
-    void doNextWrite();
 };
 
-} // namespace crsf
+} // namespace mavlink_ctrl
