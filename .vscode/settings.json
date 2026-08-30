@@ -8,5 +8,8 @@
             "COM10",
             "921600"
         ]
-    }
+    },
+    "git.ignoredRepositories": [
+        "build/windows-debug/_deps/asio-src"
+    ]
 }
