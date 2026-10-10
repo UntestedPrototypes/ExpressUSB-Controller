@@ -5,12 +5,15 @@
 #include <QTimer>
 #include <QVariantList>
 #include <memory>
+#include <mutex>
+#include <vector>
 
 #include <mavlink_controller/mavlink_controller.h>
 
 #include "InputReader.h"
 #include "core/ChannelMapper.h"
 #include "core/ControlModel.h"
+#include "core/TelemetryParser.h"
 
 class Backend : public QObject {
     Q_OBJECT
@@ -30,6 +33,8 @@ class Backend : public QObject {
     Q_PROPERTY(QStringList ports READ ports NOTIFY portsChanged)
     Q_PROPERTY(QString linkState READ linkState NOTIFY tick)
     Q_PROPERTY(QVariantMap telemetry READ telemetry NOTIFY tick)
+    Q_PROPERTY(QVariantMap robot READ robot NOTIFY tick)
+    Q_PROPERTY(QStringList log READ log NOTIFY logChanged)
     Q_PROPERTY(int page READ page WRITE setPage NOTIFY pageChanged)
 
 public:
@@ -49,6 +54,8 @@ public:
     QStringList ports() const { return m_ports; }
     QString linkState() const;
     QVariantMap telemetry() const;
+    QVariantMap robot() const;
+    QStringList log() const { return m_log; }
     int page() const { return m_page; }
     void setPage(int p);
 
@@ -64,9 +71,17 @@ signals:
     void tick();
     void portsChanged();
     void pageChanged();
+    void logChanged();
 
 private:
     void step();
+    void addLog(const QString& text);
+
+    struct Frame { uint8_t type; std::vector<uint8_t> payload; };
+    std::mutex m_frameMutex;
+    std::vector<Frame> m_frames;      // CRSF frames from the link thread, parsed on the UI thread
+    deck::TelemetryParser m_parser;
+    QStringList m_log;
 
     InputReader m_reader;
     deck::ControlModel m_model;

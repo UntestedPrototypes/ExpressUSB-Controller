@@ -13,6 +13,8 @@ ApplicationWindow {
     readonly property var inp: backend.input
     readonly property var ctl: backend.control
     readonly property var tel: backend.telemetry
+    readonly property var rob: backend.robot
+    readonly property bool stale: rob.known && rob.statusAgeS > 6
     readonly property var pageNames: ["Main", "Channels", "Log", "Settings"]
 
     function pct(v) { return Math.round(v * 100) + " %" }
@@ -38,7 +40,19 @@ ApplicationWindow {
                 text: "UL " + tel.uplinkLq + " %  DL " + tel.downlinkLq + " %"
                 tone: tel.uplinkLq > 70 ? "#2e7d32" : (tel.uplinkLq > 0 ? "#f9a825" : "#455064")
             }
-            StatusPill { text: tel.batteryV > 0 ? tel.batteryV.toFixed(1) + " V" : "-- V" }
+            StatusPill {
+                text: !rob.known ? "Robot: no data" : (rob.posture + (stale ? " (old)" : ""))
+                tone: !rob.known || stale ? "#455064" : (rob.postureCode === "X" ? "#d32f2f" : (rob.postureCode === "I" ? "#2e7d32" : "#26599a"))
+            }
+            StatusPill {
+                text: (rob.haveDetail && rob.packV > 0 ? rob.packV.toFixed(1) : (tel.batteryV > 0 ? tel.batteryV.toFixed(1) : "--")) + " V"
+                tone: (rob.packV > 0 && rob.packV < 10.5) ? "#d32f2f" : "#3a4150"
+            }
+            StatusPill {
+                visible: rob.haveDetail && rob.hotTempC > 0
+                text: "S" + rob.hotServo + " " + rob.hotTempC + " C"
+                tone: rob.hotTempC >= 65 ? "#d32f2f" : (rob.hotTempC >= 55 ? "#f9a825" : "#3a4150")
+            }
             StatusPill {
                 text: backend.controllerConnected ? backend.controllerName : "no controller"
                 tone: backend.controllerConnected ? "#3a4150" : "#d32f2f"
@@ -65,6 +79,23 @@ ApplicationWindow {
                 color: "white"
                 font.pixelSize: 16
                 text: backend.resetProgress > 0 ? "Hold Menu: reset the emergency stop" : "Hold A: arm"
+            }
+        }
+
+        // fault banner
+        Rectangle {
+            Layout.fillWidth: true
+            height: 34
+            radius: 6
+            color: "#b71c1c"
+            visible: rob.known && (rob.fault > 0 || rob.stopReason > 0)
+            Text {
+                anchors.centerIn: parent
+                color: "white"
+                font.pixelSize: 18
+                font.bold: true
+                text: (rob.fault > 0 ? "FAULT: " + rob.faultName : "STOPPING: " + rob.stopName)
+                      + (rob.faultServo > 0 ? "   servo " + rob.faultServo : "") + (rob.text.length ? "   " + rob.text : "")
             }
         }
 
@@ -100,7 +131,15 @@ ApplicationWindow {
                             ["Gait", ctl.ripple ? "Ripple" : "Wave"],
                             ["Solver", ["Analytic", "Auto", "Numeric"][ctl.solver]],
                             ["Step height", pct((ctl.stepHeight + 1) / 2)],
-                            ["Robot says", tel.flightMode.length ? tel.flightMode : "--"]
+                            ["Robot state", rob.known ? rob.state : "--"],
+                            ["Robot height", rob.haveDetail ? rob.bodyHeightMm + " mm" : "--"],
+                            ["Robot stance", rob.haveDetail ? rob.stanceMm + " mm" : "--"],
+                            ["Step height", rob.haveDetail ? rob.stepHeightMm + " mm" : "--"],
+                            ["Robot speed", rob.haveDetail ? rob.speedMmS + " mm/s" : "--"],
+                            ["Robot gait / IK", rob.haveDetail ? (rob.ripple ? "Ripple" : "Wave") + " / " + ({"A": "analytic", "M": "auto", "N": "numeric"}[rob.solver]) : "--"],
+                            ["Robot tilt", rob.haveAttitude ? rob.rollDeg.toFixed(1) + " / " + rob.pitchDeg.toFixed(1) + " deg" : "--"],
+                            ["Sequence", rob.seqRunning ? rob.seq : "--"],
+                            ["Supply", rob.haveDetail ? rob.supplyV.toFixed(1) + " V" : "--"]
                         ]
                         delegate: Column {
                             Text { text: modelData[0]; color: "#9aa3b8"; font.pixelSize: 14 }
@@ -156,7 +195,11 @@ ApplicationWindow {
             }
 
             // ---- page 2: log
-            Text { text: "Robot status log: comes with the telemetry (milestone 5)"; color: "#9aa3b8"; font.pixelSize: 20 }
+            ListView {
+                clip: true
+                model: backend.log
+                delegate: Text { text: modelData; color: "white"; font.pixelSize: 16; width: ListView.view.width; elide: Text.ElideRight }
+            }
 
             // ---- page 3: settings
             ColumnLayout {

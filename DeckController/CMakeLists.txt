@@ -40,8 +40,9 @@ if(EXISTS "${PENTAPOD_SRC}/control/rc_mapper.cpp")
             "${PENTAPOD_SRC}/drivers/crsf_telemetry.cpp"
             "${PENTAPOD_SRC}/drivers/mavlink_telemetry.cpp"
             "${PENTAPOD_SRC}/drivers/mavlink_min.cpp")
-        target_include_directories(interop_tests PRIVATE "${PENTAPOD_SRC}" "${PENTAPOD_SRC}/../lib/nanopb")
+        target_include_directories(interop_tests PRIVATE "${PENTAPOD_SRC}" "${PENTAPOD_SRC}/../.pio/libdeps/native/Nanopb")
         target_link_libraries(interop_tests PRIVATE deck_core)
+        set_target_properties(interop_tests PROPERTIES CXX_STANDARD 17)   # the generated robot.pb.h uses 'requires' as a name
         add_test(NAME interop_tests COMMAND interop_tests)
         if(MINGW)
             target_link_options(interop_tests PRIVATE -static)
