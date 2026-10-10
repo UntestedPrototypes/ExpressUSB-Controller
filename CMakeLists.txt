@@ -87,9 +87,3 @@ if(EXPRESSUSB_BUILD_TESTS)
     endif()
     add_test(NAME controller_tests COMMAND controller_tests)
 endif()
-
-# --- DeckController (Steam Deck / PC application, needs Qt 6 and SDL3): cmake -DEXPRESSUSB_BUILD_DECK=ON
-option(EXPRESSUSB_BUILD_DECK "Build the DeckController application" OFF)
-if(EXPRESSUSB_BUILD_DECK)
-    add_subdirectory(DeckController)
-endif()
