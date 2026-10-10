@@ -1,0 +1,45 @@
+# Build output
+/build/
+/out/
+/cmake-build-*/
+/Debug/
+/Release/
+/x64/
+/x86/
+
+# Compiled files
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+*.class
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Debug symbols and logs
+*.pdb
+*.ilk
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
