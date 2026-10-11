@@ -113,3 +113,16 @@ Command sent successfully! Check your TX module.
 
 Shutting down...
 ```
+
+---
+
+## Parameter menu (`parameters_example.cpp`)
+
+**What it does:**
+Reads every parameter the module exposes (the same menu as the ELRS Lua script, including folders) and lets you change them from the console: pick a number to open a folder, choose an option, type a value or text, or run a command (Bind, WiFi, ...). After each change the whole list is re-read, since one setting (e.g. packet rate or band) can change the others.
+
+**How to run (Windows):**
+```powershell
+.\build\windows-debug\parameters_example.exe COM10 921600
+```
+Keys: a number selects, `b` goes back, `r` reloads, `q` quits.

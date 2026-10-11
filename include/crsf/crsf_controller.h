@@ -46,6 +46,8 @@ public:
     std::optional<Parameter> getParameter(uint8_t index) const;
     void writeParameter(uint8_t index, const uint8_t* value, size_t len);
     bool areParametersLoaded() const;
+    // Discard the cached parameters and read them all again (e.g. after a write changed other options)
+    void reloadParameters();
     
     // Common ExpressLRS Special Actions
     enum class ElrsAction {

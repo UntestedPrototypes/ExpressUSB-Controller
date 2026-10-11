@@ -6,6 +6,9 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <condition_variable>
+#include <memory>
+#include <array>
 #include <deque>
 
 namespace crsf {
@@ -45,6 +48,7 @@ private:
     static constexpr size_t READ_BUF_SIZE = 256;
     std::array<uint8_t, READ_BUF_SIZE> read_buffer_{};
     void readThreadLoop();
+    void startRead();
     
     // Write queue management
     std::mutex write_mutex_;

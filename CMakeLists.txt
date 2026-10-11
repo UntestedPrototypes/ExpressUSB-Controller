@@ -57,7 +57,11 @@ endif()
 add_executable(special_commands_example examples/special_commands_example.cpp)
 target_link_libraries(special_commands_example PRIVATE ExpressUSB)
 
+add_executable(parameters_example examples/parameters_example.cpp)
+target_link_libraries(parameters_example PRIVATE ExpressUSB)
+
 if(MINGW)
+    target_link_options(parameters_example PRIVATE -static)
     target_link_options(expressusb_example PRIVATE -static)
     target_link_options(rc_control_example PRIVATE -static)
     target_link_options(special_commands_example PRIVATE -static)

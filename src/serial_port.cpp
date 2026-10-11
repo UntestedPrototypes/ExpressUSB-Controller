@@ -53,14 +53,12 @@ void SerialPort::close() {
         write_cv_.notify_all();
     }
 
-    if (io_context_) {
-        // Close the serial port to unblock any pending reads
-        if (serial_ && serial_->is_open()) {
+    if (io_context_ && serial_) {
+        // cancel + close on the io thread; its pending read then completes with operation_aborted and run() returns
+        asio::post(*io_context_, [this]() {
             std::error_code ec;
-            serial_->cancel(ec);
-            serial_->close(ec);
-        }
-        io_context_->stop();
+            if (serial_ && serial_->is_open()) { serial_->cancel(ec); serial_->close(ec); }
+        });
     }
 
     for (auto& t : io_threads_) {
@@ -87,29 +85,27 @@ void SerialPort::setReceiveCallback(BytesCallback cb) {
     receive_callback_ = std::move(cb);
 }
 
-void SerialPort::readThreadLoop() {
-    while (is_open_) {
-        if (!serial_ || !serial_->is_open()) {
-            break;
-        }
-
-        std::error_code ec;
-        size_t bytes_transferred = serial_->read_some(asio::buffer(read_buffer_), ec);
-        
+void SerialPort::startRead() {
+    if (!is_open_ || !serial_) return;
+    serial_->async_read_some(asio::buffer(read_buffer_), [this](const std::error_code& ec, size_t n) {
         if (ec) {
-            // If the port was closed intentionally or operation aborted, exit cleanly
-            if (ec == asio::error::operation_aborted || ec == asio::error::bad_descriptor || !is_open_) {
-                break;
-            }
-            std::cerr << "Serial read error: " << ec.message() << "\n";
+            // closed on purpose (close() cancels the pending read): leave quietly
+            if (ec == asio::error::operation_aborted || ec == asio::error::bad_descriptor || !is_open_) return;
+            std::cerr << "Serial read error: " << ec.message() << '\n';
             is_open_ = false;
-            break;
+            write_cv_.notify_all();
+            return;
         }
+        if (n > 0 && receive_callback_) receive_callback_(read_buffer_.data(), n);
+        startRead();
+    });
+}
 
-        if (bytes_transferred > 0 && receive_callback_) {
-            receive_callback_(read_buffer_.data(), bytes_transferred);
-        }
-    }
+// An asynchronous read, so close() can cancel it: a blocking read_some() is not woken by closing the port from another
+// thread, which made close() (and so Disconnect) hang until the module happened to send a byte.
+void SerialPort::readThreadLoop() {
+    startRead();
+    io_context_->run();
 }
 
 void SerialPort::writeRC(const std::vector<uint8_t>& data) {

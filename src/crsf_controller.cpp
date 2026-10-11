@@ -152,7 +152,15 @@ bool CrsfController::connect(const std::string& port, unsigned int baud_rate) {
     
     // Start heartbeat thread (RC channel transmission)
     impl_->heartbeat_thread_ = std::thread([this]() {
+        auto last_ping = std::chrono::steady_clock::now();
         while (impl_->running_) {
+            // The module may not be listening yet when connect() sends the first ping, so keep asking
+            // once a second until it has identified itself (its device info starts the parameter read).
+            if (impl_->telemetry_.get().device_name.empty() &&
+                std::chrono::steady_clock::now() - last_ping > std::chrono::seconds(1)) {
+                ping();
+                last_ping = std::chrono::steady_clock::now();
+            }
             if (!impl_->serial_.isOpen()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
@@ -322,6 +330,13 @@ void CrsfController::writeParameter(uint8_t index, const uint8_t* value, size_t 
 
 bool CrsfController::areParametersLoaded() const {
     return impl_->parameters_.isReadComplete();
+}
+
+void CrsfController::reloadParameters() {
+    impl_->parameters_.reset();
+    impl_->params_loading_started_ = false;
+    impl_->params_loaded_fired_ = false;
+    ping();   // the module's device info reply restarts the read
 }
 
 void CrsfController::ping() {
