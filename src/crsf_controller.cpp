@@ -288,12 +288,12 @@ bool CrsfController::executeCommand(const std::string& command_name) {
     
     auto params = getParameters();
     for (const auto& p : params) {
-        if (p.label == command_name) {
-            // For ExpressLRS COMMAND types (like Bind, WiFi), writing a value of '1' (or '4') 
-            // to the parameter index executes the command action on the TX module.
-            // Value 1 usually represents l_start or execute state.
-            uint8_t value = 4; // Most ELRS command routines look for 1 (start) or 4 (status/execute)
-            
+        if (p.label == command_name && p.type == static_cast<uint8_t>(ParameterType::COMMAND)) {
+            // ExpressLRS command steps: 0 ready, 1 start (click), 2 progress, 3 confirmation needed,
+            // 4 confirming, 5 cancel, 6 poll. Bind, WiFi etc. run on 1; 4 is only accepted after
+            // the module has asked for confirmation, so sending it would do nothing.
+            uint8_t value = 1;
+
             auto frame = frame_builder::buildParameterWrite(
                 static_cast<uint8_t>(Address::CRSF_TRANSMITTER),
                 static_cast<uint8_t>(Address::RADIO_TRANSMITTER),
