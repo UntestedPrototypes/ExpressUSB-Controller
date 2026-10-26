@@ -127,11 +127,11 @@ int main(int argc, char** argv) {
     const unsigned baud = argc >= 3 ? unsigned(std::stoul(argv[2])) : 921600u;
 
     CrsfController ctl;
-    std::cout << "Connecting to " << port << " @ " << baud << "...\n";
-    if (!ctl.connect(port, baud)) {
-        std::cerr << "Failed to open " << port << "\n";
-        return 1;
-    }
+    // Connects straight away if the module is plugged in, otherwise the moment it is (before it can drop into WiFi mode)
+    ctl.connectWhenAvailable(port, baud);
+    if (ctl.isWaitingForPort()) std::cout << "Waiting for " << port << ": plug the module in..." << std::endl;
+    while (ctl.isWaitingForPort()) std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::cout << "Connected to " << port << " @ " << baud << "\n";
     std::cout << "Loading parameters...\n";
     waitForParameters(ctl);
 

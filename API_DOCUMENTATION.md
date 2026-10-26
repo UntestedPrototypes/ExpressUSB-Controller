@@ -17,7 +17,14 @@ The main class used to interface with the transmitter.
         *   audrate: Typically 115200 or 921600 (recommended).
     *   *Returns:* 	rue if opened successfully.
 *   **oid disconnect()**
-    Safely closes the serial port and shuts down background threads.
+    Safely closes the serial port and shuts down background threads. Also stops a pending `connectWhenAvailable()`.
+*   **bool connectWhenAvailable(const std::string& port_name, unsigned int baudrate = 921600, unsigned int poll_ms = 250)**
+    Connects straight away if the port exists; otherwise checks for it every `poll_ms` and connects the moment it appears. Use it to start the app first and plug the module in afterwards: an ELRS TX left unconnected after power-up switches to WiFi mode after a while, so connecting right at plug-in avoids that. While waiting the state is `WaitingForPort`. Calls `onStateChange` from a background thread when it connects.
+    *   *Returns:* `false` only if already connected or already waiting.
+*   **bool isWaitingForPort() const**
+    `true` while `connectWhenAvailable()` is watching for the port.
+*   **int64_t millisecondsSinceLastFrame() const**
+    Time since the last valid frame from the module, `-1` if none since connecting. If this keeps growing while the port is open, the module has stopped talking (e.g. it went into WiFi mode): unplug and replug it.
 
 #### State & Callbacks
 *   **ConnectionState getConnectionState() const**
@@ -25,6 +32,7 @@ The main class used to interface with the transmitter.
     *   Disconnected: No module detected.
     *   TxConnected: Transmitter module connected, but no receiver link.
     *   LinkUp: Receiver is connected and telemetry is flowing.
+    *   WaitingForPort: `connectWhenAvailable()` is waiting for the module to be plugged in.
 *   **oid onParametersLoaded(std::function<void()> callback)**
     Registers a callback that fires automatically once all ELRS configuration parameters have been downloaded from the transmitter.
 

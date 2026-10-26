@@ -1,7 +1,40 @@
 #include "crsf/serial_port.h"
 #include <iostream>
+#include <chrono>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+#endif
 
 namespace crsf {
+
+bool SerialPort::pulseReset(const std::string& port_name, unsigned int hold_ms) {
+    // Never DTR on with RTS off: on the auto-reset circuit that pulls IO0 low, which would start the bootloader.
+#ifdef _WIN32
+    HANDLE h = CreateFileA(port_name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (h == INVALID_HANDLE_VALUE) return false;
+    EscapeCommFunction(h, CLRDTR);
+    EscapeCommFunction(h, SETRTS);   // EN low: held in reset
+    std::this_thread::sleep_for(std::chrono::milliseconds(hold_ms));
+    EscapeCommFunction(h, CLRRTS);   // EN high, IO0 high: normal boot
+    CloseHandle(h);
+#else
+    const int fd = ::open(port_name.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (fd < 0) return false;
+    int dtr = TIOCM_DTR, rts = TIOCM_RTS;
+    ioctl(fd, TIOCMBIC, &dtr);
+    ioctl(fd, TIOCMBIS, &rts);
+    std::this_thread::sleep_for(std::chrono::milliseconds(hold_ms));
+    ioctl(fd, TIOCMBIC, &rts);
+    ::close(fd);
+#endif
+    return true;
+}
 
 SerialPort::SerialPort() {}
 

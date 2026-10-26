@@ -54,6 +54,9 @@ int main(int argc, char* argv[]) {
             case crsf::ConnectionState::LinkUp:
                 std::cout << "[STATE] Link Up! Receiver connected." << std::endl;
                 break;
+            case crsf::ConnectionState::WaitingForPort:
+                std::cout << "[STATE] Waiting for the module to be plugged in..." << std::endl;
+                break;
         }
     });
     

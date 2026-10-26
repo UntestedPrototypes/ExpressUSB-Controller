@@ -35,7 +35,13 @@ public:
     // Write data with priority: RC frames replace pending RC, commands queue FIFO
     void writeRC(const std::vector<uint8_t>& data);
     void writeCommand(const std::vector<uint8_t>& data);
-    
+
+    // Reboot an ESP32 behind a USB-serial bridge with the usual auto-reset wiring (RTS -> EN, DTR -> IO0), the
+    // same pulse esptool uses: DTR off (normal boot, not the bootloader), RTS on (EN low) for hold_ms, RTS off.
+    // Opens and closes the port itself, so the port must not be open elsewhere. False if it can't be opened.
+    // Does nothing on boards whose reset is not wired to these lines.
+    static bool pulseReset(const std::string& port_name, unsigned int hold_ms = 100);
+
 private:
     std::unique_ptr<asio::io_context> io_context_;
     std::unique_ptr<asio::serial_port> serial_;
