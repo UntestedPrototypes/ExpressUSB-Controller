@@ -414,11 +414,16 @@ void CrsfController::closeConnection() {
 }
 
 ConnectionState CrsfController::getConnectionState() const {
-    return impl_->state_;
+    const ConnectionState s = impl_->state_;
+    // updateState() only runs when a frame arrives: after a read or write error (module unplugged) the port is closed but
+    // the last state would stay, so a connected state also needs the port still open
+    if ((s == ConnectionState::TxConnected || s == ConnectionState::LinkUp) && !impl_->serial_.isOpen())
+        return ConnectionState::Disconnected;
+    return s;
 }
 
 bool CrsfController::isConnected() const {
-    const ConnectionState s = impl_->state_;
+    const ConnectionState s = getConnectionState();
     return s == ConnectionState::TxConnected || s == ConnectionState::LinkUp;
 }
 
